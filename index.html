@@ -115,7 +115,7 @@ Rechy, your laughter is pure magic and your soul is made of sunshine! 🌸✨
 <div class="flex items-center justify-between mb-6">
 <div>
 <h2 class="font-serif-title text-2xl font-bold text-white">Memory Oasis Gallery 🖼️</h2>
-<p class="text-xs text-gray-400">Your uploaded photos appear here</p>
+<p class="text-xs text-gray-400">Your memories & uploaded photos appear here</p>
 </div>
 <div id="photoCountBadge" class="text-xs px-3 py-1 rounded-full bg-white/10 text-pink-300 border border-white/10">
 0 Photos Loaded
@@ -130,7 +130,7 @@ Rechy, your laughter is pure magic and your soul is made of sunshine! 🌸✨
 ☁️
 </div>
 <h3 class="text-lg font-semibold text-gray-200">Drag & Drop Rechy's Photos Here</h3>
-<p class="text-xs text-gray-400">Select single or multiple photos from your PC/Device. They will be saved permanently in your browser!</p>
+<p class="text-xs text-gray-400">Select single or multiple photos from your PC/Device to add extra memories!</p>
 </div>
 </div>
 
@@ -164,6 +164,10 @@ Post Sticky Note
 </div>
 
 <script>
+// Default photos are now loaded from photos.json.
+// The existing IndexedDB upload system remains separate.
+let DEFAULT_PHOTOS = [];
+
 const DB_NAME="RechyOasisDB",DB_VERSION=1;
 let db=null,photosMap={},currentViewMode='grid',targetSlotForUpload=null,selectedNoteColor='#fef08a';
 
@@ -180,7 +184,41 @@ request.onerror=(e)=>reject(e);
 });
 }
 
-// Automatic Image Compression Function to keep browser storage extremely fast
+// Load the default gallery photos from photos.json.
+async function loadDefaultPhotos(){
+try{
+const response=await fetch('./photos.json',{cache:'no-store'});
+
+if(!response.ok){
+throw new Error(`Failed to load photos.json: HTTP ${response.status}`);
+}
+
+const photoList=await response.json();
+
+if(!Array.isArray(photoList)){
+throw new Error('photos.json must contain a JSON array.');
+}
+
+const validPhotos=photoList.filter(
+path=>typeof path==='string'&&path.startsWith('photos/')
+);
+
+if(validPhotos.length!==photoList.length){
+console.warn('Some entries in photos.json were ignored because they are not valid relative photo paths.');
+}
+
+DEFAULT_PHOTOS=validPhotos;
+
+console.log(`Loaded ${DEFAULT_PHOTOS.length} default photos from photos.json`);
+
+renderGallery();
+}catch(error){
+console.error('Could not load photos.json:',error);
+DEFAULT_PHOTOS=[];
+renderGallery();
+}
+}
+
 function compressImage(file, callback) {
 const reader = new FileReader();
 reader.onload = (e) => {
@@ -350,11 +388,19 @@ photosMap[id]=dataUrl;
 renderGallery();
 }
 
+function getCombinedPhotos(){
+let allPhotos = [...DEFAULT_PHOTOS];
+Object.keys(photosMap).forEach(key => {
+allPhotos.push(photosMap[key]);
+});
+return allPhotos;
+}
+
 function renderGallery(){
 const container=document.getElementById('galleryContainer');
-const keys=Object.keys(photosMap).map(Number).sort((a,b)=>a-b);
-const loadedCount=keys.length;
-document.getElementById('photoCountBadge').innerText=`${loadedCount} Moments Saved`;
+const allPhotos = getCombinedPhotos();
+const loadedCount=allPhotos.length;
+document.getElementById('photoCountBadge').innerText=`${loadedCount} Moments Loaded`;
 
 if(currentViewMode==='grid'){
 container.innerHTML=`<div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>`;
@@ -365,8 +411,7 @@ grid.innerHTML=`<div class="col-span-full text-center text-xs text-gray-400 py-1
 return;
 }
 
-keys.forEach((id,index)=>{
-const slotData=photosMap[id];
+allPhotos.forEach((slotData,index)=>{
 const card=document.createElement('div');
 card.className=`glass-panel glass-panel-hover rounded-2xl overflow-hidden relative flex flex-col justify-between aspect-[3/4]`;
 card.innerHTML=`
@@ -374,7 +419,6 @@ card.innerHTML=`
 <img src="${slotData}" alt="Rechy Moment ${index+1}" class="w-full h-full object-cover rounded-2xl">
 <div class="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-center justify-between opacity-0 hover:opacity-100 transition-opacity">
 <a href="${slotData}" download="Rechy_Moment_${index+1}.jpg" class="px-3 py-1.5 rounded-full bg-pink-500/80 hover:bg-pink-500 text-white text-xs font-medium backdrop-blur-sm">📥 HD Download</a>
-<button onclick="triggerSlotUpload(${id})" class="px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs font-medium backdrop-blur-sm">🔄 Replace</button>
 </div>`;
 grid.appendChild(card);
 });
@@ -387,8 +431,7 @@ story.innerHTML=`<div class="w-full text-center text-xs text-gray-400 py-10">No 
 return;
 }
 
-keys.forEach((id,index)=>{
-const slotData=photosMap[id];
+allPhotos.forEach((slotData,index)=>{
 const card=document.createElement('div');
 card.className=`glass-panel rounded-2xl overflow-hidden min-w-[280px] sm:min-w-[320px] aspect-[3/4] snap-center relative flex-shrink-0`;
 card.innerHTML=`
@@ -408,8 +451,7 @@ timeline.innerHTML=`<div class="text-center text-xs text-gray-400 py-10">No time
 return;
 }
 
-keys.forEach((id,index)=>{
-const slotData=photosMap[id];
+allPhotos.forEach((slotData,index)=>{
 const item=document.createElement('div');
 const num=index+1;
 item.className=`relative flex items-center justify-between gap-8 ${num%2===0?'flex-row-reverse':''}`;
@@ -560,6 +602,7 @@ animateBurst();
 
 window.addEventListener('DOMContentLoaded',async()=>{
 await initDB();
+await loadDefaultPhotos();
 loadPhotosFromDB();
 loadNotesFromDB();
 initScratchCard();
