@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Rechy's Memory Oasis & Sunshine Journal ✨</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:linear-gradient(135deg,#fff7ed,#fef3c7,#fce7f3);
+    min-height:100vh;
+    color:#374151;
+}
+
+.handwriting{
+    font-family:'Great Vibes',cursive;
+}
+
+.glass{
+    background:rgba(255,255,255,.72);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,.7);
+    box-shadow:0 10px 35px rgba(0,0,0,.08);
+}
+
+.photo-card{
+    transition:transform .25s ease,box-shadow .25s ease;
+    cursor:pointer;
+}
+
+.photo-card:hover{
+    transform:translateY(-5px) scale(1.015);
+    box-shadow:0 15px 35px rgba(0,0,0,.15);
+}
+
+.photo-card img{
+    width:100%;
+    height:280px;
+    object-fit:cover;
+}
+
+.story-slide{
+    display:none;
+}
+
+.story-slide.active{
+    display:block;
+}
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.85);
+    z-index:1000;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal img{
+    max-width:95vw;
+    max-height:90vh;
+    object-fit:contain;
+    border-radius:16px;
+}
+
+.timeline-item{
+    position:relative;
+    padding-left:35px;
+}
+
+.timeline-item::before{
+    content:"";
+    position:absolute;
+    left:8px;
+    top:7px;
+    width:14px;
+    height:14px;
+    border-radius:50%;
+    background:#f59e0b;
+    box-shadow:0 0 0 5px #fef3c7;
+}
+
+.timeline-item::after{
+    content:"";
+    position:absolute;
+    left:14px;
+    top:25px;
+    bottom:-20px;
+    width:2px;
+    background:#fcd34d;
+}
+
+.timeline-item:last-child::after{
+    display:none;
+}
+
+.note{
+    transform:rotate(-1deg);
+    transition:transform .2s ease;
+}
+
+.note:nth-child(even){
+    transform:rotate(1deg);
+}
+
+.note:hover{
+    transform:rotate(0deg) scale(1.03);
+}
+
+.scratch-wrapper{
+    position:relative;
+    width:100%;
+    max-width:500px;
+    height:220px;
+    margin:auto;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.scratch-message{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:25px;
+    background:linear-gradient(135deg,#fef3c7,#fde68a);
+    font-size:22px;
+    font-weight:700;
+    color:#92400e;
+}
+
+#scratchCanvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    touch-action:none;
+}
+
+.hidden{
+    display:none !important;
+}
+
+@media(max-width:640px){
+
+    .photo-card img{
+        height:220px;
+    }
+
+}
+
+
+/* Dark romantic styling and clearer interaction states */
+body { background:radial-gradient(ellipse at top,#242044 0%,#111827 48%,#090b16 100%); color:#f3f4f6; }
+.glass { background:rgba(24,24,42,.82); border:1px solid rgba(255,255,255,.13); box-shadow:0 14px 40px rgba(0,0,0,.28); }
+.text-gray-800,.text-gray-700,.text-gray-600,.text-gray-500,.text-gray-400 { color:#e5e7eb !important; }
+.bg-gray-200 { background:#34344d !important; color:#f3f4f6 !important; }
+input { background:#17172b; color:#f9fafb; }
+input::placeholder { color:#9ca3af; }
+.note { color:#111111 !important; }
+.note p { color:#111111 !important; }
+.scratch-wrapper { isolation:isolate; }
+#scratchCanvas { z-index:2; cursor:crosshair; }
+#musicBtn { box-shadow:0 0 24px rgba(244,114,182,.2); }
+@media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms !important; transition-duration:.01ms !important; scroll-behavior:auto !important; } }
+
+/* Elegant memory timeline */
+.timeline-shell{background:linear-gradient(145deg,rgba(27,25,49,.96),rgba(13,18,34,.96));border:1px solid rgba(216,180,254,.18);box-shadow:0 24px 70px rgba(0,0,0,.25);overflow:hidden;}
+.timeline-intro h3{background:linear-gradient(90deg,#f9a8d4,#c4b5fd,#fde68a);-webkit-background-clip:text;background-clip:text;color:transparent!important;}
+.timeline-intro p{color:#b8b7cb!important;}
+.timeline-kicker{display:inline-block;padding:7px 13px;border:1px solid rgba(244,114,182,.32);border-radius:999px;color:#f9a8d4;font-size:10px;font-weight:800;letter-spacing:.22em;}
+.timeline-list{position:relative;max-width:1050px;margin:0 auto;padding:5px 0;}
+.timeline-list::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:2px;transform:translateX(-50%);background:linear-gradient(to bottom,transparent,#f9a8d4 8%,#a78bfa 50%,#f9a8d4 92%,transparent);opacity:.75;}
+.timeline-item-new{position:relative;width:50%;padding:0 42px 42px 0;animation:timelineRise .65s both;animation-delay:var(--item-delay,0ms);}
+.timeline-item-right{margin-left:50%;padding:0 0 42px 42px;}
+.timeline-node{position:absolute;z-index:2;right:-18px;top:28px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#f9a8d4,#a78bfa);padding:2px;box-shadow:0 0 0 6px rgba(167,139,250,.1),0 0 25px rgba(244,114,182,.25);}
+.timeline-item-right .timeline-node{right:auto;left:-18px;}
+.timeline-node span{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:#17172b;color:#fce7f3;font-size:10px;font-weight:800;}
+.timeline-memory-card{overflow:hidden;border-radius:23px;background:linear-gradient(145deg,rgba(39,37,68,.98),rgba(23,25,44,.98));border:1px solid rgba(255,255,255,.1);box-shadow:0 15px 35px rgba(0,0,0,.22);transition:transform .3s,border-color .3s,box-shadow .3s;}
+.timeline-memory-card:hover{transform:translateY(-6px);border-color:rgba(249,168,212,.48);box-shadow:0 22px 45px rgba(0,0,0,.32),0 0 28px rgba(167,139,250,.09);}
+.timeline-image-wrap{height:230px;position:relative;overflow:hidden;background:#18182a;}
+.timeline-image-wrap::after{content:"";position:absolute;inset:35% 0 0;background:linear-gradient(transparent,rgba(9,11,22,.72));pointer-events:none;}
+.timeline-image-wrap img{width:100%;height:100%;object-fit:cover;cursor:zoom-in;transition:transform .6s;}
+.timeline-memory-card:hover .timeline-image-wrap img{transform:scale(1.06);}
+.timeline-photo-label{position:absolute;z-index:1;bottom:13px;left:15px;color:white;font-size:10px;font-weight:800;letter-spacing:.18em;text-shadow:0 2px 8px #000;}
+.timeline-memory-copy{padding:21px 22px 22px;}
+.timeline-overline{color:#c4b5fd;font-size:9px;font-weight:800;letter-spacing:.16em;display:flex;align-items:center;gap:7px;}
+.timeline-overline span{color:#f9a8d4;font-size:14px;}
+.timeline-memory-copy h3{font-size:21px;font-weight:750;color:#fff!important;margin-top:9px;}
+.timeline-memory-copy p{color:#d7d5e7!important;line-height:1.7;font-size:13px;margin-top:10px;}
+.timeline-view-btn{display:inline-flex;align-items:center;gap:9px;margin-top:17px;padding:9px 13px;border-radius:999px;border:1px solid rgba(249,168,212,.28);color:#f9a8d4;font-size:11px;font-weight:700;transition:background .2s,color .2s;}
+.timeline-view-btn:hover{background:#f9a8d4;color:#17172b;}
+.timeline-view-btn span{font-size:15px;}
+.image-missing .timeline-image-wrap img{display:none;}
+.image-missing .timeline-image-wrap{background:radial-gradient(circle at top,#38305b,#18182a);}
+@keyframes timelineRise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:700px){.timeline-shell{padding:22px 15px!important}.timeline-list{padding-left:27px}.timeline-list::before{left:9px;transform:none}.timeline-item-new,.timeline-item-right{width:100%;margin-left:0;padding:0 0 28px 0}.timeline-node,.timeline-item-right .timeline-node{left:-36px;right:auto;top:20px;width:29px;height:29px;box-shadow:0 0 0 4px rgba(167,139,250,.1)}.timeline-image-wrap{height:210px}.timeline-memory-copy{padding:18px}.timeline-memory-copy h3{font-size:19px}}
+@media(prefers-reduced-motion:reduce){.timeline-item-new{animation:none}.timeline-memory-card,.timeline-image-wrap img{transition:none}}
+
+</style>
+</head>
+
+
+<body>
+
+<canvas
+    id="bgCanvas"
+    class="fixed inset-0 pointer-events-none opacity-30">
+</canvas>
+
+
+<!-- ================= HEADER ================= -->
+
+<header class="relative z-10 px-5 py-12 text-center">
+
+    <div class="max-w-5xl mx-auto glass rounded-3xl p-8 md:p-12">
+
+        <p class="text-amber-600 font-semibold tracking-widest uppercase text-sm mb-3">
+            A Little Corner of Memories
+        </p>
+
+        <h1 class="handwriting text-6xl md:text-8xl text-rose-500 leading-tight">
+            Rechy's Memory Oasis
+        </h1>
+
+        <p class="mt-4 text-gray-600 text-lg md:text-xl">
+            Sunshine, memories, little moments & endless smiles.
+        </p>
+
+        <div class="mt-7 flex flex-wrap justify-center gap-3">
+
+            <button
+                onclick="showSection('gallery')"
+                class="px-5 py-3 rounded-full bg-rose-500 text-white font-semibold hover:bg-rose-600 transition">
+                📸 Memories
+            </button>
+
+            <button
+                onclick="showSection('sunshine')"
+                class="px-5 py-3 rounded-full bg-amber-400 text-amber-950 font-semibold hover:bg-amber-500 transition">
+                ☀️ Sunshine
+            </button>
+
+            <button
+                onclick="showSection('notes')"
+                class="px-5 py-3 rounded-full bg-pink-400 text-white font-semibold hover:bg-pink-500 transition">
+                💌 Love Notes
+            </button>
+
+            <button id="musicBtn" onclick="toggleMusic()" aria-pressed="false" class="px-5 py-3 rounded-full bg-violet-500 text-white font-semibold hover:bg-violet-600 transition">♫ Play ambient music</button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="relative z-10 max-w-7xl mx-auto px-5 pb-20">
+
+
+<!-- ================= GALLERY ================= -->
+
+<section id="gallery" class="section">
+
+    <div class="glass rounded-3xl p-6 md:p-8 mb-8">
+
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+
+            <div>
+
+                <h2 class="text-3xl font-bold text-gray-800">
+                    📸 Our Memories
+                </h2>
+
+                <p class="text-gray-500 mt-2">
+                    Memories stored directly on GitHub.
+                </p>
+
+            </div>
+
+
+            <div class="flex flex-wrap gap-2">
+
+                <button
+                    onclick="setView('grid')"
+                    id="gridBtn"
+                    class="px-4 py-2 rounded-full bg-rose-500 text-white font-semibold">
+                    Grid
+                </button>
+
+                <button
+                    onclick="setView('story')"
+                    id="storyBtn"
+                    class="px-4 py-2 rounded-full bg-gray-200 text-gray-700 font-semibold">
+                    Story Reel
+                </button>
+
+                <button
+                    onclick="setView('timeline')"
+                    id="timelineBtn"
+                    class="px-4 py-2 rounded-full bg-gray-200 text-gray-700 font-semibold">
+                    Timeline
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+    </div>
+
+
+    <!-- GRID -->
+
+    <div
+        id="gridView"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+    </div>
+
+
+    <!-- STORY -->
+
+    <div id="storyView" class="hidden">
+
+        <div class="glass rounded-3xl p-5 md:p-8">
+
+            <div class="relative">
+
+                <button
+                    onclick="previousStory()"
+                    class="absolute left-2 md:left-5 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/90 shadow-lg text-2xl">
+                    ‹
+                </button>
+
+
+                <div id="storyContainer"></div>
+
+
+                <button
+                    onclick="nextStory()"
+                    class="absolute right-2 md:right-5 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/90 shadow-lg text-2xl">
+                    ›
+                </button>
+
+            </div>
+
+
+            <div class="text-center mt-5">
+
+                <span
+                    id="storyCounter"
+                    class="text-gray-600 font-semibold">
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TIMELINE -->
+
+    <div id="timelineView" class="hidden">
+
+        <div class="timeline-shell rounded-3xl p-5 md:p-10">
+            <div class="timeline-intro text-center mb-10">
+                <span class="timeline-kicker">A JOURNEY THROUGH US</span>
+                <h3 class="text-3xl md:text-4xl font-bold mt-3">Little Moments, Forever Memories</h3>
+                <p class="mt-3 text-sm md:text-base">Every picture holds a tiny piece of our story.</p>
+            </div>
+            <div id="timelineContainer" class="timeline-list"></div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= SUNSHINE ================= -->
+
+<section
+    id="sunshine"
+    class="section hidden mt-12">
+
+    <div class="glass rounded-3xl p-7 md:p-10 text-center">
+
+        <h2 class="text-4xl font-bold text-amber-600">
+            ☀️ Jar of Sunshine
+        </h2>
+
+        <p class="text-gray-600 mt-3">
+            Whenever you need a little sunshine, open this jar.
+        </p>
+
+
+        <div
+            id="complimentBox"
+            class="mt-8 p-8 rounded-3xl bg-gradient-to-br from-amber-100 to-yellow-200 text-amber-900 text-xl font-semibold min-h-[140px] flex items-center justify-center">
+
+            Click the button below ✨
+
+        </div>
+
+
+        <button
+            onclick="newCompliment()"
+            class="mt-6 px-7 py-3 rounded-full bg-amber-400 text-amber-950 font-bold hover:bg-amber-500 transition">
+
+            Give Me Sunshine ☀️
+
+        </button>
+
+    </div>
+
+
+    <!-- SCRATCH CARD -->
+
+    <div class="glass rounded-3xl p-7 md:p-10 mt-8 text-center">
+
+        <h2 class="text-3xl font-bold text-rose-500">
+            🎁 Scratch Card
+        </h2>
+
+        <p class="text-gray-600 mt-2 mb-6">
+            Scratch it to reveal a little message.
+        </p>
+
+
+        <div class="scratch-wrapper">
+
+            <div class="scratch-message">
+
+                You are one of the brightest parts of my world. ❤️
+
+            </div>
+
+
+            <canvas id="scratchCanvas"></canvas>
+
+        </div>
+
+
+        <button
+            onclick="resetScratch()"
+            class="mt-6 px-6 py-3 rounded-full bg-rose-500 text-white font-semibold hover:bg-rose-600">
+
+            Reset Scratch Card
+
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- ================= LOVE NOTES ================= -->
+
+<section
+    id="notes"
+    class="section hidden mt-12">
+
+    <div class="glass rounded-3xl p-7 md:p-10">
+
+        <div class="text-center">
+
+            <h2 class="text-4xl font-bold text-pink-500">
+                💌 Love Notes
+            </h2>
+
+            <p class="text-gray-600 mt-2">
+                Little words that deserve to stay forever.
+            </p>
+
+        </div>
+
+
+        <div class="mt-8 flex flex-col md:flex-row gap-3">
+
+            <input
+                id="noteInput"
+                type="text"
+                placeholder="Write a little note..."
+                class="flex-1 px-5 py-4 rounded-2xl border border-pink-200 outline-none focus:ring-2 focus:ring-pink-300">
+
+
+            <button
+                onclick="addNote()"
+                class="px-7 py-4 rounded-2xl bg-pink-500 text-white font-bold hover:bg-pink-600">
+
+                Add Note
+
+            </button>
+
+        </div>
+
+
+        <div
+            id="notesContainer"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- ================= IMAGE MODAL ================= -->
+
+<div
+    id="imageModal"
+    class="modal"
+    onclick="closeModal()">
+
+    <button
+        onclick="closeModal()"
+        class="absolute top-5 right-6 text-white text-4xl z-[1001]">
+        ×
+    </button>
+
+
+    <img
+        id="modalImage"
+        src=""
+        alt="Memory"
+        onclick="event.stopPropagation()">
+
+</div>
+
+
+<script>
+
+
+/* =========================================================
+   GITHUB PHOTO LIST
+   IMPORTANT:
+   FILES ARE IN REPOSITORY ROOT.
+   THERE IS NO "photos/" PREFIX.
+   ========================================================= */
+
+const DEFAULT_PHOTOS = [
+
+"621669593_2790361024655710_7097316354117120002_n.jpg",
+
+"621856178_2792544801103999_495800612061022734_n.jpg",
+
+"629341942_2805426299815849_1194695281398593865_n.jpg",
+
+"630908888_2805426456482500_8670377632260973312_n.jpg",
+
+"630976961_2805426669815812_3966454256481161402_n.jpg",
+
+"631090435_2805426633149149_4564618002300068608_n.jpg",
+
+"655239115_2845487625809716_500975069976025253_n.jpg",
+
+"656772837_2847420272283118_4284413840340251081_n.jpg",
+
+"678408021_2877808199244325_2154702270687925359_n.jpg",
+
+"678752216_2877823629242782_1809043926943874396_n.jpg",
+
+"678765432_2877823722576106_2584874554982105668_n.jpg",
+
+"679676656_2877823582576120_7092505584096478834_n.jpg",
+
+"679908423_2881835545508257_4157203375186614536_n.jpg",
+
+"681560397_2883894728635672_69582736843521321_n.jpg",
+
+"681928437_2883891675302644_9139969943116501685_n.jpg",
+
+"682283389_2881835932174885_6448337876482080821_n.jpg",
+
+"683823908_2883891178636027_8635813070001179286_n.jpg",
+
+"684154780_2883893775302434_6757060701273415574_n.jpg",
+
+"684162617_2883891155302696_1320414283022925615_n.jpg",
+
+"684206249_2883891448636000_2330337883289157854_n.jpg",
+
+"684234444_2881835622174916_8560207568532010867_n.jpg",
+
+"684252518_2883891711969307_3644092145372085063_n.jpg",
+
+"685887915_2883891391969339_7617768749396336217_n.jpg",
+
+"708210257_2912956109062867_5336419058623773507_n.jpg",
+
+"708289669_2912955845729560_7716196524929838267_n.jpg",
+
+"738570918_2952014268490384_8521620971211302100_n.jpg",
+
+"751241499_2971625603195917_6632048990687841702_n.jpg",
+
+"753702227_2971625609862583_7331666301266612033_n.jpg",
+
+"763824281_2981687422189735_158447529222591797_n.jpg",
+
+"765158517_2981687435523067_2794623398049937005_n.jpg",
+
+"765817802_2986378145053996_7847793666968409751_n.jpg",
+
+"767388271_2986377971720680_892149238341437168_n.jpg",
+
+"767483379_2986377765054034_3007409255882182088_n.jpg",
+
+"768095037_2986378205053990_7472208257137906274_n.jpg",
+
+"768190823_2986378135053997_6980624760054832558_n.jpg",
+
+"770728732_2986377921720685_4717552282254041374_n.jpg",
+
+"771573243_2988878438137300_6646966479522345346_n.jpg",
+
+"771708478_2988878601470617_3960298687169712645_n.jpg",
+
+"771821222_2988878498137294_6223640762925442136_n.jpg",
+
+"818365633_3029880500703760_7156851194784771094_n.jpg",
+
+"818621948_3029880710703739_3583577331202894606_n.jpg",
+
+"818968602_3029880634037080_5447059412989884301_n.jpg",
+
+"819012160_3029880654037078_137792322989812980_n.jpg",
+
+"819040957_3029880587370418_781214143223860332_n.jpg",
+
+"819329303_3029880670703743_8640467019911990567_n.jpg",
+
+"825340237_3035228093502334_2284221441958417835_n.jpg",
+
+"825340407_3035228190168991_5735289856612147428_n.jpg",
+
+"825340468_3035228260168984_8766527503960254653_n.jpg",
+
+"825340546_3035228006835676_4660880416016264592_n.jpg",
+
+"825340633_3035228060169004_3572701246345350820_n.jpg"
+
+];
+
+
+/* =========================================================
+   ONLY GITHUB PHOTOS
+   COMPUTER UPLOADS ARE COMPLETELY IGNORED
+   ========================================================= */
+
+function getCombinedPhotos(){
+
+    return [...DEFAULT_PHOTOS];
+
+}
+
+
+/* =========================================================
+   GALLERY
+   ========================================================= */
+
+const photoCompliments = [
+  "Your smile could turn an ordinary day into a beautiful memory.",
+  "There is a quiet magic in the way you make moments feel special.",
+  "This picture holds a little piece of your lovely energy.",
+  "You make simple moments look like something worth keeping forever.",
+  "A beautiful memory, made even brighter by you.",
+  "Your happiness is the kind of sunshine a photo can almost capture.",
+  "You have a way of making the world feel softer and warmer.",
+  "This moment is proof that the little things can mean the most.",
+  "Your presence makes even the simplest scene feel meaningful.",
+  "A lovely face, a lovely moment, a lovely memory.",
+  "You bring your own sparkle wherever you go.",
+  "This photo feels like a warm hug saved in time.",
+  "Your charm shines through even without saying a word.",
+  "A small moment with you can become a forever favourite.",
+  "You make memories feel like home.",
+  "There is something wonderfully unforgettable about you.",
+  "This is one more reason to smile whenever we look back.",
+  "You make the everyday feel a little extraordinary.",
+  "Your laugh deserves its own little place in the stars.",
+  "A snapshot of a person who makes life more beautiful.",
+  "Your light comes through in the smallest details.",
+  "This moment is sweet because it is part of your story.",
+  "You make the camera lucky just by being in the frame.",
+  "Some pictures do more than show a moment; they bring back a feeling.",
+  "Your kindness is beautiful in ways a photo can only hint at.",
+  "A memory to revisit whenever the day needs a little joy.",
+  "You have a lovely way of making time slow down for a second.",
+  "This little frame carries a whole lot of warmth.",
+  "Your beauty is in your spirit as much as your smile.",
+  "A moment like this deserves to be treasured.",
+  "You make the story behind this picture feel special.",
+  "Your happiness is a detail worth remembering.",
+  "Even a still photo seems full of life when it is you.",
+  "A gentle reminder that wonderful moments are made of people like you.",
+  "You turn memories into tiny treasures.",
+  "There is a sweetness here that time cannot take away.",
+  "You make this moment feel bright even on a cloudy day.",
+  "Your presence is the best detail in this picture.",
+  "A beautiful little chapter in your story.",
+  "This is the kind of memory that deserves a smile every time.",
+  "You bring warmth to the moments you are part of.",
+  "A lovely reminder of how precious ordinary days can be.",
+  "Your smile has a way of staying in the heart.",
+  "This picture is a little celebration of you.",
+  "You make every memory feel a little more alive.",
+  "A soft, happy moment to keep close.",
+  "Your uniqueness is what makes this memory shine.",
+  "Some beauty is felt, not just seen—and you have that.",
+  "A moment worth saving, because it has you in it.",
+  "May this memory always bring a little happiness back."
+];
+
+let currentStory = 0;
+
+let currentView = "grid";
+
+
+function renderGallery(){
+
+    const photos = getCombinedPhotos();
+
+    renderGrid(photos);
+
+    renderStory(photos);
+
+    renderTimeline(photos);
+
+}
+
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+function renderGrid(photos){
+
+    const container =
+        document.getElementById("gridView");
+
+    container.innerHTML = "";
+
+
+    photos.forEach((photo,index)=>{
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "photo-card glass rounded-2xl overflow-hidden";
+
+
+        card.innerHTML = `
+
+            <img
+                src="${photo}"
+                alt="Memory ${index + 1}"
+                loading="lazy"
+                onclick="openModal('${photo}')"
+                onerror="this.style.display='none'"
+            >
+
+            <div class="p-4">
+
+                <p class="font-semibold text-gray-700">
+                    Memory ${index + 1}
+                </p>
+
+                <p class="text-sm mt-2 leading-relaxed" style="color:#fbcfe8">💗 ${photoCompliments[index % photoCompliments.length]}</p>
+
+            </div>
+
+        `;
+
+
+        container.appendChild(card);
+
+    });
+
+}
+
+
+/* =========================================================
+   STORY
+   ========================================================= */
+
+function renderStory(photos){
+
+    const container =
+        document.getElementById("storyContainer");
+
+    container.innerHTML = "";
+
+
+    photos.forEach((photo,index)=>{
+
+        const slide =
+            document.createElement("div");
+
+        slide.className =
+            "story-slide" +
+            (index === 0 ? " active" : "");
+
+
+        slide.innerHTML = `
+
+            <img
+                src="${photo}"
+                alt="Memory ${index + 1}"
+                class="w-full max-h-[70vh] object-contain rounded-2xl cursor-pointer"
+                onclick="openModal('${photo}')"
+            >
+
+        `;
+
+
+        container.appendChild(slide);
+
+    });
+
+
+    updateStoryCounter();
+
+}
+
+
+function updateStoryCounter(){
+
+    const photos =
+        getCombinedPhotos();
+
+    document.getElementById("storyCounter").textContent =
+        `${currentStory + 1} / ${photos.length}`;
+
+}
+
+
+function showStory(index){
+
+    const slides =
+        document.querySelectorAll(".story-slide");
+
+
+    if(!slides.length){
+        return;
+    }
+
+
+    if(index < 0){
+        index = slides.length - 1;
+    }
+
+
+    if(index >= slides.length){
+        index = 0;
+    }
+
+
+    slides.forEach(slide =>
+        slide.classList.remove("active")
+    );
+
+
+    slides[index].classList.add("active");
+
+
+    currentStory = index;
+
+
+    updateStoryCounter();
+
+}
+
+
+function nextStory(){
+
+    showStory(currentStory + 1);
+
+}
+
+
+function previousStory(){
+
+    showStory(currentStory - 1);
+
+}
+
+
+/* =========================================================
+   TIMELINE
+   ========================================================= */
+
+function renderTimeline(photos){
+    const container = document.getElementById("timelineContainer");
+    container.innerHTML = "";
+
+    photos.forEach((photo,index)=>{
+        const item = document.createElement("article");
+        item.className = "timeline-item-new" + (index % 2 ? " timeline-item-right" : " timeline-item-left");
+        item.style.setProperty("--item-delay", `${Math.min(index * 55, 550)}ms`);
+        item.innerHTML = `
+            <div class="timeline-node"><span>${String(index + 1).padStart(2,"0")}</span></div>
+            <div class="timeline-memory-card">
+                <div class="timeline-image-wrap">
+                    <img src="${photo}" alt="Memory ${index + 1}" loading="lazy" onclick="openModal('${photo}')" onerror="this.closest('.timeline-memory-card').classList.add('image-missing')">
+                    <span class="timeline-photo-label">MEMORY ${String(index + 1).padStart(2,"0")}</span>
+                </div>
+                <div class="timeline-memory-copy">
+                    <div class="timeline-overline"><span>✦</span> A MOMENT TO KEEP</div>
+                    <h3>Memory ${index + 1}</h3>
+                    <p>💗 ${photoCompliments[index % photoCompliments.length]}</p>
+                    <button class="timeline-view-btn" onclick="openModal('${photo}')" aria-label="View memory ${index + 1}">View memory <span>↗</span></button>
+                </div>
+            </div>`;
+        container.appendChild(item);
+    });
+}
+
+/* =========================================================
+   VIEW SWITCH
+   ========================================================= */
+
+function setView(view){
+
+    currentView = view;
+
+
+    document
+        .getElementById("gridView")
+        .classList.toggle("hidden",view !== "grid");
+
+
+    document
+        .getElementById("storyView")
+        .classList.toggle("hidden",view !== "story");
+
+
+    document
+        .getElementById("timelineView")
+        .classList.toggle("hidden",view !== "timeline");
+
+
+    const buttons = [
+
+        document.getElementById("gridBtn"),
+
+        document.getElementById("storyBtn"),
+
+        document.getElementById("timelineBtn")
+
+    ];
+
+
+    buttons.forEach(btn=>{
+
+        btn.classList.remove(
+            "bg-rose-500",
+            "text-white"
+        );
+
+        btn.classList.add(
+            "bg-gray-200",
+            "text-gray-700"
+        );
+
+    });
+
+
+    let activeButton;
+
+
+    if(view === "grid"){
+
+        activeButton =
+            document.getElementById("gridBtn");
+
+    }
+
+
+    if(view === "story"){
+
+        activeButton =
+            document.getElementById("storyBtn");
+
+    }
+
+
+    if(view === "timeline"){
+
+        activeButton =
+            document.getElementById("timelineBtn");
+
+    }
+
+
+    activeButton.classList.remove(
+        "bg-gray-200",
+        "text-gray-700"
+    );
+
+
+    activeButton.classList.add(
+        "bg-rose-500",
+        "text-white"
+    );
+
+}
+
+
+/* =========================================================
+   SECTION SWITCH
+   ========================================================= */
+
+function showSection(section){
+
+    document
+        .querySelectorAll(".section")
+        .forEach(el =>
+            el.classList.add("hidden")
+        );
+
+
+    document
+        .getElementById(section)
+        .classList.remove("hidden");
+
+
+    window.scrollTo({
+
+        top:
+            document.getElementById(section).offsetTop - 20,
+
+        behavior:"smooth"
+
+    });
+
+}
+
+
+/* =========================================================
+   IMAGE MODAL
+   ========================================================= */
+
+function openModal(src){
+
+    document
+        .getElementById("modalImage")
+        .src = src;
+
+
+    document
+        .getElementById("imageModal")
+        .classList.add("show");
+
+}
+
+
+function closeModal(){
+
+    document
+        .getElementById("imageModal")
+        .classList.remove("show");
+
+}
+
+
+/* =========================================================
+   SUNSHINE
+   ========================================================= */
+
+const compliments = [
+
+    "You make ordinary moments feel special.",
+
+    "You are someone's reason to smile today.",
+
+    "You deserve all the good things coming your way.",
+
+    "Your presence makes the world a little warmer.",
+
+    "You are doing better than you think.",
+
+    "There is something beautifully unique about you.",
+
+    "You make memories worth keeping.",
+
+    "You are more precious than you realize.",
+
+    "Your smile can brighten an entire day.",
+
+    "You deserve a peaceful and beautiful life.",
+
+    "Never forget how special you are.",
+
+    "You are someone's favorite person."
+
+];
+
+
+function newCompliment(){
+
+    const random =
+        compliments[
+            Math.floor(
+                Math.random() * compliments.length
+            )
+        ];
+
+
+    document
+        .getElementById("complimentBox")
+        .textContent = random;
+
+}
+
+
+/* =========================================================
+   SCRATCH CARD
+   ========================================================= */
+
+let scratchCanvas;
+let scratchCtx;
+let isScratching = false;
+let scratchRevealed = false;
+
+function initScratchCard(){
+    scratchCanvas = document.getElementById("scratchCanvas");
+    if (!scratchCanvas) return;
+    scratchCtx = scratchCanvas.getContext("2d", { willReadFrequently: true });
+    resizeScratchCanvas();
+    scratchCanvas.addEventListener("pointerdown", e => {
+        if (scratchRevealed) return;
+        isScratching = true;
+        if (scratchCanvas.setPointerCapture) scratchCanvas.setPointerCapture(e.pointerId);
+        scratch(e);
+    });
+    scratchCanvas.addEventListener("pointermove", e => { if (isScratching && !scratchRevealed) scratch(e); });
+    ["pointerup", "pointercancel", "lostpointercapture"].forEach(type =>
+        scratchCanvas.addEventListener(type, () => { isScratching = false; })
+    );
+    window.addEventListener("resize", resizeScratchCanvas);
+}
+
+function resizeScratchCanvas(){
+    if (!scratchCanvas) return;
+    const wrapper = scratchCanvas.parentElement;
+    const oldWidth = scratchCanvas.width;
+    const oldHeight = scratchCanvas.height;
+    const width = Math.max(1, Math.floor(wrapper.clientWidth));
+    const height = Math.max(1, Math.floor(wrapper.clientHeight));
+    if (oldWidth === width && oldHeight === height && scratchCtx) return;
+    scratchCanvas.width = width;
+    scratchCanvas.height = height;
+    scratchCtx = scratchCanvas.getContext("2d", { willReadFrequently: true });
+    resetScratch();
+}
+
+function resetScratch(){
+    if (!scratchCanvas || !scratchCtx) return;
+    scratchRevealed = false;
+    scratchCanvas.style.display = "block";
+    scratchCtx.globalCompositeOperation = "source-over";
+    const w = scratchCanvas.width, h = scratchCanvas.height;
+    const gradient = scratchCtx.createLinearGradient(0, 0, w, h);
+    gradient.addColorStop(0, "#d8d3e8");
+    gradient.addColorStop(1, "#9ca3af");
+    scratchCtx.fillStyle = gradient;
+    scratchCtx.fillRect(0, 0, w, h);
+    scratchCtx.fillStyle = "#37304b";
+    scratchCtx.font = "bold 22px Inter, sans-serif";
+    scratchCtx.textAlign = "center";
+    scratchCtx.textBaseline = "middle";
+    scratchCtx.fillText("✨ Scratch to reveal ✨", w / 2, h / 2);
+}
+
+function scratch(e){
+    if (!scratchCtx || !scratchCanvas) return;
+    const rect = scratchCanvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const x = (e.clientX - rect.left) * (scratchCanvas.width / rect.width);
+    const y = (e.clientY - rect.top) * (scratchCanvas.height / rect.height);
+    scratchCtx.globalCompositeOperation = "destination-out";
+    scratchCtx.lineWidth = 42;
+    scratchCtx.lineCap = "round";
+    scratchCtx.lineJoin = "round";
+    scratchCtx.beginPath();
+    scratchCtx.arc(x, y, 24, 0, Math.PI * 2);
+    scratchCtx.fill();
+    checkScratchProgress();
+}
+
+function checkScratchProgress(){
+    if (scratchRevealed) return;
+    const w = scratchCanvas.width, h = scratchCanvas.height;
+    const pixels = scratchCtx.getImageData(0, 0, w, h).data;
+    let transparent = 0;
+    // Sample pixels for performance; reveal when roughly 42% of the coating is scratched.
+    const step = 16;
+    for (let i = 3; i < pixels.length; i += 4 * step) if (pixels[i] < 40) transparent++;
+    const sampled = Math.ceil((w * h) / step);
+    if (transparent / sampled > 0.42){
+        scratchRevealed = true;
+        scratchCtx.clearRect(0, 0, w, h);
+        scratchCanvas.style.display = "none";
+    }
+}
+
+/* =========================================================
+   LOVE NOTES
+   ========================================================= */
+
+const defaultNotes = [
+
+    "Every little moment with you is worth remembering.",
+
+    "Some memories become home.",
+
+    "You make ordinary days beautiful."
+
+];
+
+
+function loadNotes(){
+
+    const saved =
+        JSON.parse(
+            localStorage.getItem("rechyLoveNotes") || "null"
+        );
+
+
+    return saved || defaultNotes;
+
+}
+
+
+function saveNotes(notes){
+
+    localStorage.setItem(
+        "rechyLoveNotes",
+        JSON.stringify(notes)
+    );
+
+}
+
+
+function renderNotes(){
+
+    const notes =
+        loadNotes();
+
+
+    const container =
+        document.getElementById("notesContainer");
+
+
+    container.innerHTML = "";
+
+
+    notes.forEach((note,index)=>{
+
+        const div =
+            document.createElement("div");
+
+
+        div.className =
+            "note rounded-2xl p-6 bg-yellow-100 shadow-md min-h-[150px]";
+
+
+        div.innerHTML = `
+
+            <p class="text-gray-700 leading-relaxed" style="color:#111111;">
+                ${escapeHtml(note)}
+            </p>
+
+            <button
+                onclick="deleteNote(${index})"
+                class="mt-5 text-sm text-red-400 hover:text-red-600">
+                Delete
+            </button>
+
+        `;
+
+
+        container.appendChild(div);
+
+    });
+
+}
+
+
+function addNote(){
+
+    const input =
+        document.getElementById("noteInput");
+
+
+    const value =
+        input.value.trim();
+
+
+    if(!value){
+        return;
+    }
+
+
+    const notes =
+        loadNotes();
+
+
+    notes.push(value);
+
+
+    saveNotes(notes);
+
+
+    input.value = "";
+
+
+    renderNotes();
+
+}
+
+
+function deleteNote(index){
+
+    const notes =
+        loadNotes();
+
+
+    notes.splice(index,1);
+
+
+    saveNotes(notes);
+
+
+    renderNotes();
+
+}
+
+
+function escapeHtml(text){
+
+    const div =
+        document.createElement("div");
+
+
+    div.textContent = text;
+
+
+    return div.innerHTML;
+
+}
+
+
+/* =========================================================
+   KEYBOARD
+   ========================================================= */
+
+document.addEventListener(
+    "keydown",
+    e=>{
+
+        if(e.key === "Escape"){
+
+            closeModal();
+
+        }
+
+
+        if(currentView === "story"){
+
+            if(e.key === "ArrowRight"){
+
+                nextStory();
+
+            }
+
+
+            if(e.key === "ArrowLeft"){
+
+                previousStory();
+
+            }
+
+        }
+
+    }
+);
+
+
+/* Gentle ambient tones, started only after the visitor presses Play. */
+let ambientAudio = null;
+let ambientTimer = null;
+let ambientPlaying = false;
+function toggleMusic(){
+    const button = document.getElementById("musicBtn");
+    if (ambientPlaying){
+        clearInterval(ambientTimer);
+        ambientTimer = null;
+        ambientPlaying = false;
+        if (ambientAudio) ambientAudio.close().catch(()=>{});
+        ambientAudio = null;
+        button.textContent = "♫ Play ambient music";
+        button.setAttribute("aria-pressed", "false");
+        return;
+    }
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass){ button.textContent = "Audio unavailable"; return; }
+    ambientAudio = new AudioContextClass();
+    ambientAudio.resume();
+    ambientPlaying = true;
+    button.textContent = "Ⅱ Pause ambient music";
+    button.setAttribute("aria-pressed", "true");
+    playAmbientChord();
+    ambientTimer = setInterval(playAmbientChord, 5200);
+}
+function playAmbientChord(){
+    if (!ambientAudio || !ambientPlaying) return;
+    const now = ambientAudio.currentTime;
+    [261.63, 329.63, 392.00].forEach((frequency, i)=>{
+        const oscillator = ambientAudio.createOscillator();
+        const gain = ambientAudio.createGain();
+        oscillator.type = "sine";
+        oscillator.frequency.value = frequency;
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.018/(i+1), now+0.6);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now+4.6);
+        oscillator.connect(gain); gain.connect(ambientAudio.destination);
+        oscillator.start(now); oscillator.stop(now+4.7);
+    });
+}
+
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
+
+window.addEventListener(
+    "DOMContentLoaded",
+    ()=>{
+
+        renderGallery();
+
+        renderNotes();
+
+        initScratchCard();
+
+        setView("grid");
+
+    }
+);
+
+</script>
+
+</body>
+</html>
